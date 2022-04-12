@@ -3,7 +3,7 @@ buildscript {
     ext.kotlin_version = '1.4.21'
     repositories {
         maven {
-            url "https://artifact-maven.byted.org/repository/Volcengine/"
+            url 'https://artifact.bytedance.com/repository/Volcengine/'
         }
         google()
         jcenter()
@@ -25,17 +25,9 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url "https://artifact-maven.byted.org/repository/Volcengine/"
+            url 'https://artifact.bytedance.com/repository/Volcengine/'
         }
         google()
-        maven {
-            url "https://artifact-maven.byted.org/repository/Volcengine/"
-        }
-        maven {
-            url 'http://maven.byted.org/repository/android_public/'
-        }
-        google()
-        jcenter()
         jcenter()
     }
 }
