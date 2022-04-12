@@ -1,0 +1,121 @@
+// 插件模块的build.gradle的通用配置，一般不要修改
+
+apply from: file(rootProject.file("./gradle/zeus/common_utils.gradle"))
+init("pluginModule")
+apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'com.volcengine.zeus.plugin'
+
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId pluginConfig.get("pluginPackageName").asString()
+        minSdkVersion commonConfig.get("minSdkVersion").asInt(-1)
+        targetSdkVersion commonConfig.get("targetSdkVersion").asInt(-1)
+        versionCode pluginConfig.get("pluginVersionCode").asInt(-1)
+        versionName versionCode + ""
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+}
+
+dependencies {
+    implementation project(":zeus-fake-host")
+    implementation project(pluginConfig.get("pluginImplModule").asString())
+}
+
+afterEvaluate {
+    configPush("Debug")
+    configPush("Release")
+}
+
+def configPush(variant) {
+    def task = project.tasks.findByName("assemble" + variant)
+    if (task == null) {
+        return
+    }
+
+    task.doLast {
+        String pluginApk
+        String hostPackageName = HOST_PACKAGE_NAME
+        project.tasks.findByName("package" + variant).outputs.files.files.each {
+            if (it.isDirectory() && it.getAbsolutePath().contains("/build/outputs/apk/")) {
+                it.listFiles().each { file ->
+                    if (file.getName().endsWith(".apk")) {
+                        pluginApk = file.getAbsolutePath()
+                    }
+                }
+            }
+        }
+        String tmpFile = "/data/local/tmp/plugin.apk"
+        String targetDir = "/data/data/" + hostPackageName + "/files/.zeus_d/"
+        String targetFile = targetDir + "plugin.apk"
+        if (pluginApk == null) {
+            throw new RuntimeException("pluginApk获取失败")
+        }
+        // 执行普通的push命令
+        def cmd = executeCmd("adb push " + pluginApk + " " + targetFile)
+        if (cmd.contains("error") && !cmd.contains("Permission")) {
+            // 非权限导致的错误
+            String errorMsg = "push失败，终止编译，错误信息:\n" + cmd
+            println(errorMsg)
+            throw new RuntimeException(errorMsg)
+        }
+
+        if (cmd.contains("Permission")) {// 有权限问题，走run-as兜底
+            println(cmd + "\n[普通方式]直接push失败，尝试run-as方式\n")
+            println("[run-as方式]push到临时目录\n")
+            cmd = executeCmd("adb push " + pluginApk + " " + tmpFile)
+            if (cmd.contains("error")) {
+                // 非权限导致的错误
+                String errorMsg = "[run-as方式]push到临时目录失败，终止编译，错误信息:\n" + cmd
+                println(errorMsg)
+                throw new RuntimeException(errorMsg)
+            }
+            println("[run-as方式]push到临时目录成功\n")
+            println("[run-as方式]执行copy命令\n")
+            cmd = executeCmd("adb shell", "run-as " + hostPackageName, "mkdir -p " + targetDir, "cp " + tmpFile + " " + targetFile)
+            if (cmd.length() > 0) {// TODO: by xk 11/23/21 5:06 PM  如何判断这些命令执行失败？？？
+                String errorMsg = "[run-as方式]执行copy命令失败，终止编译，错误信息:\n" + cmd
+                println(errorMsg)
+                throw new RuntimeException(errorMsg)
+            }
+            println("[run-as方式]执行成功\n")
+        }
+        println("adb push 成功\n")
+    }
+}
+
+def executeCmd(String cmd, String... subCmd) {
+    Runtime rt = Runtime.getRuntime();//获得Runtime对象
+    Process pr = rt.exec(cmd);
+    //获取输出流并转换成缓冲区
+    if (subCmd != null && subCmd.length > 0) {
+        BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(pr.getOutputStream()));
+        for (int i = 0; i < subCmd.length; i++) {
+            bout.write(subCmd[i] + "\n")//输出数据
+        }
+        bout.close()//关闭流
+    }
+    //SequenceInputStream是一个串联流，能够把两个流结合起来，通过该对象就可以将
+    //getInputStream方法和getErrorStream方法获取到的流一起进行查看了，当然也可以单独操作
+    SequenceInputStream sis = new SequenceInputStream(pr.getInputStream(), pr.getErrorStream());
+    InputStreamReader inst = new InputStreamReader(sis, "utf-8");//设置编码格式并转换为输入流
+    BufferedReader br = new BufferedReader(inst);//输入流缓冲区
+
+    String res = null;
+    StringBuilder sb = new StringBuilder();
+    while ((res = br.readLine()) != null) {//循环读取缓冲区中的数据
+        sb.append(res + "\n");
+    }
+    br.close();
+    pr.waitFor();
+    pr.destroy();
+    return sb.toString()
+}

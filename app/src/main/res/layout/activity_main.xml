@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/did"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/plugin1State"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/plugin2State"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="plugin1Plugin"
+        android:text="启动plugin1插件Activity" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="addPluginView"
+        android:text="给宿主Activity添加一个插件View" />
+
+    <FrameLayout
+        android:id="@+id/view_group"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
+    <!--    <Button-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:onClick="plugin2Plugin"-->
+    <!--        android:text="启动plugin2插件Activity" />-->
+
+    <!--    <Button-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:onClick="livePlugin"-->
+    <!--        android:text="直播入口" />-->
+
+    <!--    <Button-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:onClick="testProcessMainActivity"-->
+    <!--        android:text="启动Test进程的宿主activity" />-->
+
+    <!--    <com.volcengine.zeus.SameNameView-->
+    <!--        android:id="@+id/test"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content" />-->
+</LinearLayout>

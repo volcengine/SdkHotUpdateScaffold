@@ -1,0 +1,24 @@
+// 查询插件配置，where:哪个module在查询 key:查询的key
+ext.init = {
+    where ->
+        def pluginConfig
+        zeusConfig.get("plugins").each {
+            if (it.get(where).asString() == project.getIdentityPath().toString()) {
+                pluginConfig = it
+            }
+        }
+        ext.commonConfig = zeusConfig.get("common")
+        ext.pluginConfig = pluginConfig
+}
+
+
+ext.queryApiModuleByPluginModule = {
+    pluginModule ->
+        def pluginConfig
+        zeusConfig.get("plugins").each {
+            if (it.get("pluginModule").asString() == pluginModule) {
+                pluginConfig = it
+            }
+        }
+        return pluginConfig.get("pluginApiModule").asString()
+}

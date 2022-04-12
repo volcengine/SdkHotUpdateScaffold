@@ -1,0 +1,4 @@
+rootProject.name = "ZeusScaffold"
+
+// 通过解析zeus_config.json5文件，引入脚手架必备的module。
+apply from: file("./gradle/zeus/common_settings.gradle")

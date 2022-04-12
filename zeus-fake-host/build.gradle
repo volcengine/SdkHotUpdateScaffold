@@ -1,0 +1,78 @@
+apply from: file(rootProject.file("./gradle/zeus/common_utils.gradle"))
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        applicationId "com.volcengine.fakehost"
+        minSdkVersion zeusConfig.get("common").get("minSdkVersion").asInt(-1)
+        targetSdkVersion zeusConfig.get("common").get("targetSdkVersion").asInt(-1)
+    }
+
+    signingConfigs {
+        zeus {
+            storeFile rootProject.file(zeusConfig.get("common").get("signStoreFile").asString())
+            storePassword zeusConfig.get("common").get("signStorePassword").asString()
+            keyAlias = zeusConfig.get("common").get("signKeyAlias").asString()
+            keyPassword zeusConfig.get("common").get("signKeyPassword").asString()
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.zeus
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.zeus
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // =====================================================================================
+    // 这部分代码其实就是dynamicFeatures = ["插件module"]，由于一个project下有多个插件，通过下面逻辑保证不引入不编译的插件
+    def pluginModule = new ArrayList()
+    zeusConfig.get("plugins").each {
+        pluginModule.add(it.get("pluginModule").asString())
+    }
+    String[] pluginZeus = pluginModule.toArray()
+    String plugins = ""
+    def taskNames = gradle.startParameter.taskNames
+    taskNames.each { taskName ->
+        pluginZeus.each { plugin ->
+            if (taskName.contains(plugin.replaceFirst(":", "") + ":")) {
+                plugins += ("," + plugin)
+            }
+        }
+    }
+    if (plugins.contains(",")) {
+        plugins = plugins.replaceFirst(",", "")
+        if (plugins.split(",").length > 0) {
+            println plugins.split(",")
+            dynamicFeatures = plugins.split(",")
+        }
+    }
+    // =====================================================================================
+}
+
+dependencies {
+    def pluginModule = new ArrayList()
+    zeusConfig.get("plugins").each {
+        pluginModule.add(it.get("pluginModule").asString())
+    }
+    String[] pluginZeus = pluginModule.toArray()
+    def taskNames = gradle.startParameter.taskNames
+    taskNames.each { taskName ->
+        pluginZeus.each { plugin ->
+            if (taskName.contains(plugin.replaceFirst(":", "") + ":")) {
+                // 依赖这个plugin对应的api
+                implementation project(queryApiModuleByPluginModule(plugin))
+            }
+        }
+    }
+}

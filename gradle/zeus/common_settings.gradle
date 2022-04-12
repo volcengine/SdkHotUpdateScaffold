@@ -1,0 +1,62 @@
+// settings.gradle的通用配置，一般不要修改
+// 请勿修改！该文件通过解析zeus_config.json5文件对App、插件、插件Api、插件Impl、zeus-fake-host模块进行引入。
+// 如果想创建新的module，请添加到根目录settings.gradle中
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("blue.endless:jankson:1.2.1")
+    }
+}
+
+StringBuilder sb = new StringBuilder()
+new File("./zeus_config/config.json5").readLines().forEach {
+    sb.append(it).append("\n")
+}
+import blue.endless.jankson.Jankson
+
+ext.zeusConfig = Jankson.builder().build().load(sb.toString())
+
+
+gradle.rootProject(new Action<Project>() {
+    @Override
+    void execute(Project project) {
+        project.ext.zeusConfig = ext.zeusConfig
+    }
+})
+
+def pluginModule = new ArrayList()
+// include 插件的api和impl模块
+ext.zeusConfig.get("plugins").each {
+    pluginModule.add(it.get("pluginModule").asString())
+    include it.get("pluginApiModule").asString()
+    include it.get("pluginImplModule").asString()
+}
+include ':zeus-fake-host'
+include ':app'
+
+// 由于不支持多个插件同时编译，所以这里加了条件判断
+String[] pluginZeus = pluginModule.toArray()
+String plugins = ""
+def taskNames = gradle.startParameter.taskNames
+if (taskNames.size() == 0) {
+    // sync的时候，都include进来
+    pluginZeus.each {
+        include it
+    }
+} else {
+    // 执行命令的时候，只include命令中包含的插件模块
+    gradle.startParameter.taskNames.each { taskName ->
+        pluginZeus.each { plugin ->
+            if (taskName.contains(plugin.replaceFirst(":", "") + ":")) {
+                plugins += ("," + plugin)
+            }
+        }
+    }
+    plugins = plugins.replaceFirst(",", "")
+
+    plugins.split(",").each {
+        include it
+    }
+}

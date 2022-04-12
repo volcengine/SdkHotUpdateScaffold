@@ -1,0 +1,19 @@
+// 插件Impl模块的build.gradle的通用配置，一般不要修改
+
+apply from: file(rootProject.file("./gradle/zeus/common_utils.gradle"))
+init("pluginImplModule")
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(pluginConfig.get("pluginApiModule").asString())
+}

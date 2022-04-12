@@ -1,0 +1,70 @@
+// 插件Api模块的build.gradle的通用配置，一般不要修改
+
+apply from: file(rootProject.file("./gradle/zeus/common_utils.gradle"))
+init("pluginApiModule")
+
+apply plugin: 'com.android.library'
+
+// 替换api层的包名为"插件包名_api"
+def manifestFile = project.file("./src/main/AndroidManifest.xml")
+manifestFile.write(manifestFile.getText().replaceFirst("package=\".*\"", "package=\"" + pluginConfig.get("pluginPackageName").asString() + "_api\""))
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        minSdkVersion commonConfig.get("minSdkVersion").asInt(-1)
+        versionCode pluginConfig.get("pluginApiVersionCode").asInt(-1)
+        buildConfigField("String", "PLUGIN_PKG_NAME", "\"" + pluginConfig.get("pluginPackageName").asString() + "\"")
+        // 添加PlaceHolders
+        manifestPlaceholders.put("zeusApiVersionCode", versionCode)
+        manifestPlaceholders.put("zeusPluginPkgName", pluginConfig.get("pluginPackageName").asString())
+        manifestPlaceholders.put("minPluginVersion", pluginConfig.get("minPluginVersion").asString())
+        manifestPlaceholders.put("maxPluginVersion", pluginConfig.get("maxPluginVersion").asString())
+        manifestPlaceholders.put("signature", pluginConfig.get("signature").asString())
+        manifestPlaceholders.put("internalPath", pluginConfig.get("internalPath").asString())
+        manifestPlaceholders.put("internalVersionCode", pluginConfig.get("internalVersionCode").asInt(-1))
+        manifestPlaceholders.put("appKey", pluginConfig.get("appKey").asString())
+        manifestPlaceholders.put("appSecretKey", pluginConfig.get("appSecretKey").asString())
+        // 配置consumer文件
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+
+dependencies {
+    api "com.volcengine:zeus-core:${commonConfig.get("zeus_core_version").asString()}"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

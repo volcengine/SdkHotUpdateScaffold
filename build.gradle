@@ -1,0 +1,45 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = '1.4.21'
+    repositories {
+        maven {
+            url "https://artifact-maven.byted.org/repository/Volcengine/"
+        }
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.volcengine:zeus-plugin:${zeusConfig.get("common").get("zeus_plugin_version").asString()}"
+        // 适用于agp4.1，使插件脱糖后生成的类进入插件，需要放在最前面
+//        classpath "com.volcengine:r8-for-mira:r8_2.1.7-r3-alpha.6"
+        classpath "com.android.tools.build:gradle:4.1.0"
+//        classpath "com.android.tools.build:gradle:3.5.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath("blue.endless:jankson:1.2.1")
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            url "https://artifact-maven.byted.org/repository/Volcengine/"
+        }
+        google()
+        maven {
+            url "https://artifact-maven.byted.org/repository/Volcengine/"
+        }
+        maven {
+            url 'http://maven.byted.org/repository/android_public/'
+        }
+        google()
+        jcenter()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.8">
+      <module name="ZeusCore.app" target="1.8" />
+      <module name="ZeusCore.liveplugin.live-api" target="1.8" />
+      <module name="ZeusCore.liveplugin.live-impl" target="1.8" />
+      <module name="ZeusCore.liveplugin.liveplugin" target="1.8" />
+      <module name="ZeusCore.plugin1.plugin1" target="1.8" />
+      <module name="ZeusCore.plugin1.plugin1-api" target="1.8" />
+      <module name="ZeusCore.plugin1.plugin1-impl" target="1.8" />
+      <module name="ZeusCore.plugin2.plugin2" target="1.8" />
+      <module name="ZeusCore.plugin2.plugin2-api" target="1.8" />
+      <module name="ZeusCore.plugin2.plugin2-impl" target="1.8" />
+      <module name="ZeusCore.signature-tool" target="1.8" />
+      <module name="ZeusCore.zeus-core" target="1.8" />
+      <module name="ZeusCore.zeus-fake-host" target="1.8" />
+      <module name="ZeusDemo.liveplugin.live-api" target="11" />
+      <module name="ZeusDemo.liveplugin.live-impl" target="11" />
+      <module name="ZeusDemo.signature-tool" target="11" />
+      <module name="ZeusDemo.zeus-core" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
