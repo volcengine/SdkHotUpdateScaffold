@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        String did = AppLog.getInstance("251143").getDid();
+        String did = AppLog.getInstance("334386").getDid();
         if (TextUtils.isEmpty(did)) {
             did = "首次运行或者网络错误，还没有did，重启即可展示";
         }
