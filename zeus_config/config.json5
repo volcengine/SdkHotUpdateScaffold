@@ -30,7 +30,7 @@
   ],
   "common": {
     // zeus-plugin（用于插件编译）的版本
-    "zeus_plugin_version": "410.1.1-beta.54",
+    "zeus_plugin_version": "410.1.1-beta.56",
     // zeus-core（运行时库）的版本
     "zeus_core_version": "0.0.1-beta.4200.57",
     // 插件、Api支持的最低android系统版本（最低支持到21，当然也可以调更低，但是业务层需要做控制，在21以下的版本不使用插件功能）

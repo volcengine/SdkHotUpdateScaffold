@@ -117,8 +117,13 @@ public class MainActivity extends Activity {
     }
 
     public void plugin1Plugin(View view) {
-        boolean b = Plugin1.preparePlugin(this);
+        boolean b = Plugin1.preparePlugin(this, () -> {
+            // 安装成功的回调。可能在执行preparePlugin很久之后才安装成功（如下载插件耗时1min），所以也不建议在
+            // 这里执行逻辑，因为时机不确定。
+            // plugin1Plugin(view);
+        });
         if (b) {
+            // 插件准备好了，使用插件功能
             Plugin1.getApi().startPluginActivity(this);
         }
     }
