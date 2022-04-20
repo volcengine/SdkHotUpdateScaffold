@@ -10,8 +10,6 @@ buildscript {
     }
     dependencies {
         classpath "com.volcengine:zeus-plugin:${zeusConfig.get("common").get("zeus_plugin_version").asString()}"
-        // 适用于agp4.1，使插件脱糖后生成的类进入插件，需要放在最前面
-//        classpath "com.volcengine:r8-for-mira:r8_2.1.7-r3-alpha.6"
         classpath "com.android.tools.build:gradle:4.1.0"
 //        classpath "com.android.tools.build:gradle:3.5.3"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
