@@ -2,13 +2,13 @@
   "plugins": [
     {
       // SDK插件module的名称，用于输出插件apk
-      "pluginModule": ":plugin1",
+      "pluginModule": ":plugin",
       // SDK Api层的module，可以在这里编写Api层的代码，或者直接依赖其他库。这个module及其依赖中的代码最终会被宿主依赖，并且打入宿主中，不具备动态化能力
-      "pluginApiModule": ":plugin1-api",
+      "pluginApiModule": ":plugin-api",
       // SDK Impl层的module，可以在这里编写Impl层的代码，或者直接依赖其他库。这个module及其依赖中的代码最终会被打到插件中，具备动态化能力
-      "pluginImplModule": ":plugin1-impl",
+      "pluginImplModule": ":plugin-impl",
       // SDK插件的包名，必须保证唯一，类似App的包名
-      "pluginPackageName": "com.volcengine.zeus.plugin1",
+      "pluginPackageName": "com.volcengine.zeus.plugin",
       // SDK Api的版本号。提供给宿主接入的Api的版本号。主要用于从平台请求插件是判断应该下发的插件Apk版本
       "pluginApiVersionCode": 1,
       // SDK 插件Apk的版本号。
@@ -30,9 +30,9 @@
   ],
   "common": {
     // zeus-plugin（用于插件编译）的版本
-    "zeus_plugin_version": "410.1.1-beta.58",
+    "zeus_plugin_version": "410.1.1-beta.59",
     // zeus-core（运行时库）的版本
-    "zeus_core_version": "0.0.1-beta.4200.57",
+    "zeus_core_version": "0.0.1-beta.4200.58",
     // 插件、Api支持的最低android系统版本（最低支持到21，当然也可以调更低，但是业务层需要做控制，在21以下的版本不使用插件功能）
     "minSdkVersion": 21,
     // 插件的targetSdkVersion版本

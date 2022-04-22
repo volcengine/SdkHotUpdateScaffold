@@ -10,7 +10,7 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/plugin1State"
+        android:id="@+id/pluginState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -22,8 +22,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="plugin1Plugin"
-        android:text="启动plugin1插件Activity" />
+        android:onClick="pluginPlugin"
+        android:text="启动plugin插件Activity" />
 
     <Button
         android:layout_width="wrap_content"

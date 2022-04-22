@@ -1,0 +1,53 @@
+zeusOptions {
+    checkStub {
+        // 该检测只在开启proguard的环境下生效
+        enable = true
+        // 必填项，在插件api层创建一个普通类，并且把类名配置到这里，该工具提示出来的桩Activity都将作为它的内部类
+        stubActivityOuterClassName = "com.volcengine.zeus.plugin_api.StubActivity"
+        // 桩Activity和插件Activity的映射关系，key为桩Activity的短路径名，value为插件Activity全路径名的集合。根据编译报错的提示配置即可。
+        stub2PluginActivity = [
+                "AppCompat_main_standard": ["com.volcengine.zeus.plugin_impl.PluginMainActivity"]
+        ]
+        // 必填项，在插件api层创建一个普通类，并且把类名配置到这里，该工具提示出来的ServerManager都将作为它的内部类
+        serverManagerOuterClassName = "com.volcengine.zeus.plugin_api.StubServerManager"
+        // 默认为true，可以不配置。如果为false，即使有错也不会中断编译
+        breakWhenHasError = true
+        // 豁免清单。插件Activity、Service必须满足一系列的规范，zeus-plugin才会自动输出占桩逻辑。有时候插件Activity、Service不满足规范，但是经过评估认为可以忽略这些问题，则可以将其配置在这里，zeus-plugin会自动忽略掉不满足的条件。
+        // 这些条件如：
+        // 1.插件Activity、Service的export设为true，由于插件中的Activity、Service无法被外部App启动，因此不允许export设为true。
+        // 2.插件Activity配置了intent-filter。由于插件Activity最终走的是宿主的桩，因此在插件中配置intent-filter不会生效。
+        // 3. ......
+        warningExemptions = ["com.volcengine.zeus.plugin_impl.PluginMainActivity"]
+        // 被占桩工具忽略的插件Activity。正常情况下，占桩工具会扫描插件的所有Activity，为其提供占桩建议，开发者必须遵守该建议。如果开发者不想遵守该建议，或者工具提示出来的建议满足不了需求，则可以把插件Activity配置到这里，检测工具会认为没有这个Activity。
+        // 常见的case：
+        // 1.插件的某个Activity不可能启动，没必要为它创建占桩规则
+        // 2.插件的某个Activity的manifest中有隐式意图，或者有工具不支持的配置。开发者可以自己进行占桩规则的编写。详细参考下文的自定义占桩规则。
+        ignorePluginActivity = []
+        // 自定义的占桩规则。key为自定义的桩，value为需要自定义规则的插件Activity。详细参考下文的自定义占桩规则。
+        customStub2PluginActivity = []
+    }
+    // modifyRes相关功能。
+    modifyRes {
+        // 是否开启ModifyRes功能，默认为true，如果SDKImpl使用了SDKApi中的资源，则需要开启该配置
+        enable = true
+        // 如果插件使用了宿主的res，那么需要对这些resName进行keep，防止shrinkResources将资源缩减掉。如果开启了modifyRes功能，每次插件编译都会扫描出插件使用的宿主res，并且与该文件中的配置做diff。该文件的名称可以随意定义，最好带上插件名称，防止与其他文件名冲突导致被覆盖。注意：如果宿主接入了类似ResGuard的框架，也需要将resName加入到这类框架的白名单中。可以直接从该文件中copy需要keep的resName。
+        keepRNameFile = project.rootProject.file("./plugin-api/src/main/res/raw/zeus_keep_res_plugin.xml")
+        // 默认为true，如果与keepRNameFile diff出了内容，则抛出异常，提示开发者添加到keepRNameFile文件中。
+        breakWhenHasNewKeep = true
+    }
+    checkClass {
+        enable = true
+        // 用于增量计算需要keep的规则，一般配置api层consumerProguardFile
+        apiConsumerProguardFile = project.rootProject.file("./plugin-api/consumer-rules.pro")
+        // keep插件类的继承链中宿主部分的所有的抽象方法
+        keepAllAbstractMethods = true
+        // keep规则变更是否提醒
+        breakWhenKeepRuleChange = true
+        breakWhenHasError = true
+        // 是否keep所有成员，默认true（即输出规则为-keep class Test{*;}）
+        keepAllMember = true
+        // 插件中引用的不存在的类的白名单，前缀匹配。比如：插件引用com.abc.def，白名单可以为com.abc，不要配置的范围太大，可能会问题无法暴露出来。
+        // 如 noExistClassesWhiteList = ["com.huawei.HWUtils","com.xiaomi.XMUtils"]
+        noExistClassesWhiteList = []
+    }
+}

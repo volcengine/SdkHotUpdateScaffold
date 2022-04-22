@@ -14,7 +14,6 @@ import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.ZeusPluginStateListener;
 import com.volcengine.zeus.demo.R;
 import com.volcengine.zeus.plugin.Plugin;
-import com.volcengine.zeus.plugin1_api.Plugin1;
 
 import java.util.Locale;
 
@@ -56,7 +55,7 @@ public class MainActivity extends Activity {
 
     private void updatePluginState(String callBackPackageName, int event, Object[] objects) {
         hasUpdate = true;
-        updatePluginState(callBackPackageName, Plugin1.plugin1PkgName, R.id.plugin1State, event, objects);
+        updatePluginState(callBackPackageName, com.volcengine.zeus.plugin_api.Plugin.pluginPkgName, R.id.pluginState, event, objects);
     }
 
 
@@ -116,20 +115,20 @@ public class MainActivity extends Activity {
         return "异常";
     }
 
-    public void plugin1Plugin(View view) {
-        boolean b = Plugin1.preparePlugin(this, () -> {
+    public void pluginPlugin(View view) {
+        boolean b = com.volcengine.zeus.plugin_api.Plugin.preparePlugin(this, () -> {
             // 安装成功的回调。可能在执行preparePlugin很久之后才安装成功（如下载插件耗时1min），所以也不建议在
             // 这里执行逻辑，因为时机不确定。
-            // plugin1Plugin(view);
+            // pluginPlugin(view);
         });
         if (b) {
             // 插件准备好了，使用插件功能
-            Plugin1.getApi().startPluginActivity(this);
+            com.volcengine.zeus.plugin_api.Plugin.getApi().startPluginActivity(this);
         }
     }
 
     public void addPluginView(View view) {
-        View pluginView = Plugin1.callPluginByReflect(this);
+        View pluginView = com.volcengine.zeus.plugin_api.Plugin.callPluginByReflect(this);
         if (pluginView != null) {
             ((ViewGroup) findViewById(R.id.view_group)).addView(pluginView);
         }

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.volcengine.zeus.plugin1_impl">
-
-    <application android:name="com.volcengine.zeus.plugin1_impl.Plugin1Application">
-        <activity android:name=".Plugin1MainActivity" />
-    </application>
-
-</manifest>

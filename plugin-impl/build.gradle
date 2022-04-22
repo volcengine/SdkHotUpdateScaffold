@@ -1,0 +1,6 @@
+// 引入plugin_impl module的通用配置
+apply from: file(rootProject.file("./gradle/zeus/common_plugin_impl.gradle"))
+
+// 引入plugin_impl module的个性化配置
+apply from: file(rootProject.file("./zeus_config/plugin_impl.gradle"))
+

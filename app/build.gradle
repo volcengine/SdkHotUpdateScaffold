@@ -45,5 +45,5 @@ repositories {
 }
 
 dependencies {
-    implementation project(':plugin1-api')
+    implementation project(':plugin-api')
 }
