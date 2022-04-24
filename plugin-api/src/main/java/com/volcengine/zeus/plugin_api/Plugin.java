@@ -25,6 +25,8 @@ public class Plugin {
 
     public static void init(Context context) {
         // Zeus框架的初始化，需要在Application#onCreate中执行。可重复调用，内部有重复调用判断，以第一次为准。
+        // 第二个参数为是否已经同意隐私协议，如果传true，表示同意隐私协议，会初始化设备id。
+        // 如果传false，则不会初始化，但需要在同意隐私协议之后调用Zeus.onPrivacyAgreed();否则会影响插件下发逻辑。
         Zeus.init((Application) context.getApplicationContext(), true);
         // 触发下载目录中插件的安装（兜底方法，建议每次冷启动都调用）
         // 一般情况下载目录的文件在插件下载完成之后会立即安装，安装成功后文件会被删除。

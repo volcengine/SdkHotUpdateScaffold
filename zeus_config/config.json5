@@ -9,7 +9,7 @@
       "pluginImplModule": ":plugin-impl",
       // SDK插件的包名，必须保证唯一，类似App的包名
       "pluginPackageName": "com.volcengine.zeus.plugin",
-      // SDK Api的版本号。提供给宿主接入的Api的版本号。主要用于从平台请求插件是判断应该下发的插件Apk版本
+      // SDK Api的版本号。提供给宿主接入的Api的版本号。主要用于从平台请求插件时判断应该下发的插件Apk版本
       "pluginApiVersionCode": 1,
       // SDK 插件Apk的版本号。
       "pluginVersionCode": 1,
