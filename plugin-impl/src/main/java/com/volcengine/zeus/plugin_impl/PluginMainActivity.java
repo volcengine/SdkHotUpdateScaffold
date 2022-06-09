@@ -1,8 +1,9 @@
 package com.volcengine.zeus.plugin_impl;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.plugin_api.Plugin;
