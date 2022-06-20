@@ -1,18 +1,21 @@
+apply plugin: 'com.volcengine.zeus.plugin'
 zeusOptions {
+    pluginPkgName = pluginConfig.get("pluginPackageName").asString()
     checkStub {
         // 是否开启四大组件占桩检测功能。
         enable = true
-        // 必填项，在插件api层创建一个普通类，并且把类名配置到这里，该工具提示出来的桩Activity都将作为它的内部类
-        stubActivityOuterClassName = "com.volcengine.zeus.plugin_api.StubActivity"
-        // 必填项，在插件api层创建一个普通类，并且把类名配置到这里，该工具提示出来的ServerManager都将作为它的内部类
-        serverManagerOuterClassName = "com.volcengine.zeus.plugin_api.StubServerManager"
         // 默认为true，可以不配置。如果为false，即使有错也不会中断编译
         breakWhenHasError = true
+        // 桩Activity。编译插件时会自动进行提示，根据提示，填充到这里即可。编译Api时会自动根据这里的值在aar中生成对应的桩Activity，
+        // 因此这里修改时，需要重新编译api
+        stubActivities = ["AppCompat_main_standard"]
+        // 插件中Service的子进程名。编译插件时，当插件中有子进程的Service，会提示出来，将其填充到这里即可。
+        // 编译Api时会自动根据这里的值在aar中生成对应的ServerManager，因此这里修改时，需要重新编译api。
+        serverManagerProcesses = []
+        // 插件中Provider的子进程名。编译插件时，当插件中有子进程的Provider，会提示出来，将其填充到这里即可。
+        // 编译Api时会自动根据这里的值在aar中生成对应的ProviderProxy，因此这里修改时，需要重新编译api。
+        providerProcesses = []
         //-------------------插件编译过程中，检测到需要修改下面配置时，会自动提示出来，无需刻意关心------------------------------------
-        // 桩Activity和插件Activity的映射关系，key为桩Activity的短路径名，value为插件Activity全路径名的集合。根据编译报错的提示配置即可。
-        stub2PluginActivity = [
-                "AppCompat_main_standard": ["com.volcengine.zeus.plugin_impl.PluginMainActivity"]
-        ]
         // 豁免清单。插件Activity、Service必须满足一系列的规范，zeus-plugin才会自动输出占桩逻辑。有时候插件Activity、Service不满足规范，但是经过评估认为可以忽略这些问题，则可以将其配置在这里，zeus-plugin会自动忽略掉不满足的条件。
         // 这些条件如：
         // 1.插件Activity、Service的export设为true，由于插件中的Activity、Service无法被外部App启动，因此不允许export设为true。
@@ -24,8 +27,6 @@ zeusOptions {
         // 1.插件的某个Activity不可能启动，没必要为它创建占桩规则
         // 2.插件的某个Activity的manifest中有隐式意图，或者有工具不支持的配置。开发者可以自己进行占桩规则的编写。
         ignorePluginActivity = []
-        // 自定义的占桩规则。key为自定义的桩，value为需要自定义规则的插件Activity。
-        customStub2PluginActivity = []
     }
     // modifyRes相关功能。
     modifyRes {

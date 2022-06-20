@@ -3,11 +3,12 @@ package com.volcengine.zeusscaffold;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.apm.applog.AppLog;
 import com.volcengine.zeus.Zeus;

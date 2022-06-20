@@ -12,13 +12,5 @@
                 internalPath:'${internalPath}',internalVersionCode:${internalVersionCode},
                 appKey:'${appKey}',appSecretKey:'${appSecretKey}'
             }" />
-
-
-        <activity
-            android:name="com.volcengine.zeus.plugin_api.StubActivity$AppCompat_main_standard"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:exported="false"
-            android:launchMode="standard"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
     </application>
 </manifest>

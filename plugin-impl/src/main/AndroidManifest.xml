@@ -5,7 +5,8 @@
     <application android:name="com.volcengine.zeus.plugin_impl.PluginApplication">
         <activity android:name=".PluginMainActivity">
             <intent-filter>
-                <action android:name="${applicationId}" />
+                <!--故意加一个intent-filter，用于测试warningExemptions-->
+                <action android:name="${applicationId}.warningExemptions" />
             </intent-filter>
         </activity>
     </application>
