@@ -19,7 +19,14 @@ android {
         multiDexEnabled true
     }
 
-
+    signingConfigs {
+        zeus {
+            storeFile rootProject.file(zeusConfig.get("common").get("signStoreFile").asString())
+            storePassword zeusConfig.get("common").get("signStorePassword").asString()
+            keyAlias = zeusConfig.get("common").get("signKeyAlias").asString()
+            keyPassword zeusConfig.get("common").get("signKeyPassword").asString()
+        }
+    }
     buildTypes {
         debug {
             shrinkResources false
@@ -29,6 +36,7 @@ android {
             minifyEnabled true
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.zeus
         }
     }
     sourceSets {
