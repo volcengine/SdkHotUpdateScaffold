@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/navigation_host_flow"
+    android:id="@+id/main_nav_graph">
+
+    <include app:graph="@navigation/navigation_host_flow" />
+
+    <include app:graph="@navigation/navigation_fragment_plugin_flow" />
+
+    <action
+        android:id="@+id/action_global_fragment_plugin_flow"
+        app:destination="@id/navigation_fragment_plugin_flow"
+        app:popUpTo="@id/main_nav_graph"
+        app:popUpToInclusive="true" />
+
+</navigation>

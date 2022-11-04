@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="navigation_host_flow" type="id" />
+
+    <item name="navigation_fragment_plugin_flow" type="id" />
+</resources>

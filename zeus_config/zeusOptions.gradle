@@ -38,7 +38,7 @@ zeusOptions {
         // 注意：如果宿主接入了类似ResGuard的框架，也需要将资源名称加入到这类框架的白名单中。可以直接从该文件中复制需要keep的资源名称。
         keepRNameFile = project.rootProject.file("./plugin-api/src/main/res/raw/zeus_keep_res_plugin.xml")
         // 默认为true，如果与keepRNameFile diff出了内容，则抛出异常，提示开发者添加到keepRNameFile文件中。
-        breakWhenHasNewKeep = true
+        breakWhenHasNewKeep = false
     }
     checkClass {
         // 该检测只在开启proguard的环境下生效

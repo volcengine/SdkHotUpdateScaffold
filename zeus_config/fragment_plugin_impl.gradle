@@ -1,2 +1,9 @@
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
+    implementation project(':navigation')
 }

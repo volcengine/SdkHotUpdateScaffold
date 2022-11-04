@@ -53,5 +53,7 @@ repositories {
 }
 
 dependencies {
+    api project(':navigation')
     implementation project(':plugin-api')
+    implementation project(':fragmentpluginapi')
 }

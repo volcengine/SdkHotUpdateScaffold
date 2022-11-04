@@ -19,6 +19,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/fragmentPluginState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/fragmentPlugin2State"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,6 +45,13 @@
         android:id="@+id/view_group"
         android:layout_width="100dp"
         android:layout_height="100dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="startSecondActivity"
+        android:text="启动SecondActivity" />
 
     <!--    <Button-->
     <!--        android:layout_width="wrap_content"-->

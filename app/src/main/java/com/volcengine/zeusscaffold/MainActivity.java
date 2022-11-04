@@ -2,6 +2,7 @@ package com.volcengine.zeusscaffold;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.ZeusPluginStateListener;
 import com.volcengine.zeus.demo.R;
 import com.volcengine.zeus.plugin.Plugin;
+import com.volcengine.zeusscaffold.fragmentpluginapi.FragmentPlugin;
 
 import java.util.Locale;
 
@@ -57,6 +59,7 @@ public class MainActivity extends Activity {
     private void updatePluginState(String callBackPackageName, int event, Object[] objects) {
         hasUpdate = true;
         updatePluginState(callBackPackageName, com.volcengine.zeus.plugin_api.Plugin.pluginPkgName, R.id.pluginState, event, objects);
+        updatePluginState(callBackPackageName, FragmentPlugin.pluginPkgName, R.id.fragmentPluginState, event, objects);
     }
 
 
@@ -126,6 +129,10 @@ public class MainActivity extends Activity {
             // 插件准备好了，使用插件功能
             com.volcengine.zeus.plugin_api.Plugin.getApi().startPluginActivity(this);
         }
+    }
+
+    public void startSecondActivity(View view) {
+        startActivity(new Intent(MainActivity.this, SecondActivity.class));
     }
 
     public void addPluginView(View view) {

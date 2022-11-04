@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.volcengine.zeus.GlobalParam;
 import com.volcengine.zeus.plugin_api.Plugin;
+import com.volcengine.zeusscaffold.fragmentpluginapi.FragmentPlugin;
 
 public class ZeusDemoApp extends Application {
 
@@ -15,5 +16,6 @@ public class ZeusDemoApp extends Application {
         GlobalParam.getInstance().setDebug(true);
         // 进行Zeus框架的初始化以及插件1的初始化
         Plugin.init(this);
+        FragmentPlugin.init(this);
     }
 }
