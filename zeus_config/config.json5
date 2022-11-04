@@ -27,6 +27,33 @@
       "appKey": "",
       "appSecretKey": "",
     },
+    {
+      // SDK插件module的名称，用于输出插件apk
+      "pluginModule": ":fragmentplugin",
+      // SDK Api层的module，可以在这里编写Api层的代码，或者直接依赖其他库。这个module及其依赖中的代码最终会被宿主依赖，并且打入宿主中，不具备动态化能力
+      "pluginApiModule": ":fragmentpluginapi",
+      // SDK Impl层的module，可以在这里编写Impl层的代码，或者直接依赖其他库。这个module及其依赖中的代码最终会被打到插件中，具备动态化能力
+      "pluginImplModule": ":fragmentpluginimpl",
+      // SDK插件的包名，必须保证唯一，类似App的包名
+      "pluginPackageName": "com.volcengine.zeus.fragmentplugin",
+      // SDK Api的版本号。提供给宿主接入的Api的版本号。主要用于从平台请求插件时判断应该下发的插件Apk版本
+      "pluginApiVersionCode": 1,
+      // SDK 插件Apk的版本号。
+      "pluginVersionCode": 1,
+      // 当前SDK Api版本上可运行的最小插件版本
+      "minPluginVersion": 1,
+      // 当前SDK Api版本上可运行的最大插件版本
+      "maxPluginVersion": 999999999,
+      // 通过签名工具获取到的签名信息。具体内容可以通过签名提取工具根据自己的签名获取，下面内容为zeusKeyStore对应的签名信息，为了安全期间，建议替换
+      "signature": "MIIDtTCCAp2gAwIBAgIETGR14zANBgkqhkiG9w0BAQsFADCBijEVMBMGA1UEBhMMemV1c2tleXN0b3JlMRUwEwYDVQQIEwx6ZXVza2V5c3RvcmUxFTATBgNVBAcTDHpldXNrZXlzdG9yZTEVMBMGA1UEChMMemV1c2tleXN0b3JlMRUwEwYDVQQLEwx6ZXVza2V5c3RvcmUxFTATBgNVBAMTDHpldXNrZXlzdG9yZTAeFw0yMTEwMTMwOTMzMDdaFw00NjEwMDcwOTMzMDdaMIGKMRUwEwYDVQQGEwx6ZXVza2V5c3RvcmUxFTATBgNVBAgTDHpldXNrZXlzdG9yZTEVMBMGA1UEBxMMemV1c2tleXN0b3JlMRUwEwYDVQQKEwx6ZXVza2V5c3RvcmUxFTATBgNVBAsTDHpldXNrZXlzdG9yZTEVMBMGA1UEAxMMemV1c2tleXN0b3JlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkYrpOI87qW8RLy9U/xFho8OsnQ2owyTIFFCpSd3Ffh/rQogG/24/xoR8dngagnAfHI2RkEmlt7zu0hj0r/Gp4wB/UvxRbFnZE06y4HuT+Qn7f6vUjP00lom2bfPFwIR+2gRY9q1FD9iQMGfKL11ApAiUCWqjihw49r844ap+qdSmcA6eG4WJkmJddOn3IPrRoquQ62RjtPm2bgN59C39YiwDLaOAHar0TsArQwRqAZmAcOIo6i/4TVCn/lbNiHm9wihWqtl5TztDEN/wePAdPUDxsgJD237hSp7GXsKioiE0eWWmuTJySBvmZIwd2AT2uB8eUbfVJLzhqHjwvN49QQIDAQABoyEwHzAdBgNVHQ4EFgQUv0NtOFQQM9zn9GEDPym3wiRqywQwDQYJKoZIhvcNAQELBQADggEBAC0uFPPT6WSnbPbnV4oiRTBlkTHFjAU5ne9vWqhGGf1nvzAAmI6TbQkhz/Gx038BWvMJFI7Tcv+VTXCKhnyeVrtKqCCzGv7YodJKFkdj4nnYeT71oBDUlC8CSgb0AN8a4aS0k31+UWO+ffAbHcSwlHAfWX06bNNEZ5CwfiUjkMSre63FlmL60MJPPLdNvfeQc9zcZtywsrKdJUqPx2wzTZVH32B8eNlMbtGDXdWQj2/86L1P2BVM7JopbujwY0QuYwTiRH35750dK7VV/yHt2ZfFmjeD0DYLyg+OBKwH7mNV74LBnvFBr4jlDUWPkv4BwWCJ1RuWW1CS6gqm7iP7PJM=",
+      // 内置插件的路径
+      "internalPath": "",
+      // 内置插件的版本
+      "internalVersionCode": -1,
+      // 用于接口请求
+      "appKey": "",
+      "appSecretKey": "",
+    },
   ],
   "common": {
     // zeus-plugin（用于插件编译）的版本

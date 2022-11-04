@@ -1,0 +1,6 @@
+// 引入plugin_impl module的通用配置
+apply from: file(rootProject.file("./gradle/zeus/common_plugin_impl.gradle"))
+// 引入plugin_impl module的个性化配置
+// 注意：这里引入一个live_plugin_impl文件，并且在./zeus_config/目录下创建该文件。
+// 该文件用于引入liveImpl的依赖，可参考第一节描述
+apply from: file(rootProject.file("./zeus_config/fragment_plugin_impl.gradle"))

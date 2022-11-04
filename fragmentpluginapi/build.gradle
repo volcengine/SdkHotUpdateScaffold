@@ -1,0 +1,8 @@
+// 引入plugin_api module的通用配置
+apply from: file(rootProject.file("./gradle/zeus/common_plugin_api.gradle"))
+// 引入plugin_api module的个性化配置
+// 注意：这里引入一个live_plugin_api文件，并且在./zeus_config/目录下创建该文件。
+// 该文件用于引入liveapi的依赖，可参考第一节描述
+apply from: file(rootProject.file("./zeus_config/fragment_plugin_api.gradle"))
+// 插件模块和api模块均需要引入zeusOptions的配置
+apply from: file(rootProject.file("./zeus_config/zeusOptions.gradle"))

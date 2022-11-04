@@ -12,7 +12,7 @@ buildscript {
         classpath "com.volcengine:zeus-plugin:${zeusConfig.get("common").get("zeus_plugin_version").asString()}"
         classpath "com.android.tools.build:gradle:4.1.0"
 //        classpath "com.android.tools.build:gradle:3.5.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath("blue.endless:jankson:1.2.1")
 
         // NOTE: Do not place your application dependencies here; they belong
