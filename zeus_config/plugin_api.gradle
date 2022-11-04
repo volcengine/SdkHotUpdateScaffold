@@ -1,2 +1,4 @@
 dependencies {
+    // 为了在插件application中注入fragment。如果不注入，这里不依赖也可以
+    api project(':navigation')
 }

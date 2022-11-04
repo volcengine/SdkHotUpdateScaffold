@@ -11,6 +11,6 @@ public class FragmentPluginImpl implements IFragmentPluginApi {
     @Override
     public void startPluginFragment(Fragment fragment) {
         NavController navController = Navigation.findNavController(fragment.requireActivity(), R.id.nav_host_fragment);
-        NavExtensionsKt.safeNavigate(navController, R.id.action_global_fragment_plugin_flow, null, null);
+        NavExtensionsKt.safeNavigate( navController,fragment.requireActivity(), R.id.action_global_fragment_plugin_flow, null, null);
     }
 }
