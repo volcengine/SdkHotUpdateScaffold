@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.volcengine.zeus.GlobalParam;
 import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.ZeusPluginStateListener;
 
@@ -18,23 +19,41 @@ import java.lang.reflect.Constructor;
  * @author xuekai
  * @date 8/31/21
  */
-public class Plugin {
+public class PluginMain {
     public static IPluginApi api = null;
 
     public static final String pluginPkgName = BuildConfig.PLUGIN_PKG_NAME;
 
+    /**
+     * 在初始化之前调用。初始化之后就不要调用了。
+     */
+    public static void callFirst(){
+        // 关闭自动请求插件的功能（注意必须要在第一次触发Zeus.init之前）
+        GlobalParam.getInstance().setAutoFetch(false);
+        // 必须保证在首次触发Zeus.init之前，调用GlobalParam.getInstance()的各种配置方法，否则会报错。
+        GlobalParam.getInstance().setDebug(true);
+    }
+
+    /**
+     * 业务方请求到数据后，通过此处传入。
+     */
+    public static void injectData(String resp){
+        // 注入数据
+        Zeus.getPlugin(pluginPkgName).injectResponse(resp);
+        // 使用数据，不会真实触发网络请求
+        Zeus.fetchPlugin(pluginPkgName);
+    }
+    /**
+     * 插件使用前必须调用
+     */
     public static void init(Context context) {
-        // Zeus框架的初始化，需要在Application#onCreate中执行。可重复调用，内部有重复调用判断，以第一次为准。
-        // 第二个参数为是否已经同意隐私协议，如果传true，表示同意隐私协议，会初始化设备id。
-        // 如果传false，则不会初始化，但需要在同意隐私协议之后调用Zeus.onPrivacyAgreed();否则会影响插件下发逻辑。
+        // Zeus框架的初始化，如果插件manifest中有子进程的组件，则必须在Application#onCreate中执行，否则只需要在插件使用前初始化即可。可重复调用，内部有重复调用判断，以第一次为准。
+        // ms版本的Zeus移除了APM，所以这里始终传入true就行。
         Zeus.init((Application) context.getApplicationContext(), true);
         // 触发下载目录中插件的安装（兜底方法，建议每次冷启动都调用）
         // 一般情况下载目录的文件在插件下载完成之后会立即安装，安装成功后文件会被删除。
         // 特殊情况下，插件下载完，还没来得及安装，进程被杀，此时启动后需要触发安装。
         Zeus.installFromDownloadDir();
-        // 从平台拉取插件。该方法会触发网络请求，每隔一段时间会向平台请求符合规则的最新插件，并进行下载、安装。
-        // 该方法可以在较晚时机触发。但是要保证可以被触发，否则插件可能无法成功下载。
-        Zeus.fetchPlugin(pluginPkgName);
     }
 
     /**

@@ -4,5 +4,16 @@
     <asm skipDebug="false" skipFrames="false" skipCode="false" expandFrames="false" />
     <groovy codeStyle="LEGACY" />
   </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2671875" />
+        <entry key="app/src/main/res/xml/a.xml" value="0.10960144927536232" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment1.xml" value="0.1" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment2.xml" value="0.1" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment3.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

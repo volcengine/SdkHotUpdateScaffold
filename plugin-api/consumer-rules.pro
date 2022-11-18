@@ -35,7 +35,7 @@
 -keep class android.support.v7.app.AppCompatCallback {
 	*;
 }
--keep class com.volcengine.zeus.plugin_api.Plugin {
+-keep class com.volcengine.zeus.plugin_api.PluginMain {
 	*;
 }
 -keep class com.volcengine.zeus.ZeusApplication {
