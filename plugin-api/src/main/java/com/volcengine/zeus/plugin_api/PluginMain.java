@@ -1,14 +1,26 @@
 package com.volcengine.zeus.plugin_api;
 
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.net.Uri;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.ZeusPluginStateListener;
+import com.volcengine.zeus.transform.ZeusProviderTransform;
+import com.volcengine.zeus.transform.ZeusTransformUtils;
+import com.volcengine.zeus.util.MethodUtils;
 
 import java.lang.reflect.Constructor;
 
@@ -18,7 +30,7 @@ import java.lang.reflect.Constructor;
  * @author xuekai
  * @date 8/31/21
  */
-public class Plugin {
+public class PluginMain {
     public static IPluginApi api = null;
 
     public static final String pluginPkgName = BuildConfig.PLUGIN_PKG_NAME;
@@ -35,6 +47,10 @@ public class Plugin {
         // 从平台拉取插件。该方法会触发网络请求，每隔一段时间会向平台请求符合规则的最新插件，并进行下载、安装。
         // 该方法可以在较晚时机触发。但是要保证可以被触发，否则插件可能无法成功下载。
         Zeus.fetchPlugin(pluginPkgName);
+    }
+
+    public static boolean preparePlugin(Context context) {
+        return preparePlugin(context, null);
     }
 
     /**
@@ -54,7 +70,7 @@ public class Plugin {
      */
     public static boolean preparePlugin(Context context, OnPluginInstallListener listener) {
         if (!Zeus.isPluginInstalled(pluginPkgName)) {
-            Toast.makeText(context, "插件1未安装，不可用，注册安装的回调", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "插件未安装，不可用，注册安装的回调", Toast.LENGTH_SHORT).show();
             // 插件没安装，添加一个监听，监听插件的安装状态。当安装成功之后给予回调，业务方可以在回调中重新执行相关逻辑（插件加载、插件使用等。）
             // 也可以直接丢弃本次逻辑，因为何时安装好是未知的，可能马上就装好了，也可能永远不会装好（比如网络错误导致插件下载失败等）。
             // 建议在插件未安装时，在业务层进行兜底。
@@ -64,7 +80,9 @@ public class Plugin {
                 public void onPluginStateChange(String s, int i, Object... objects) {
                     if (TextUtils.equals(s, pluginPkgName) && i == EVENT_INSTALL_SUCCESS) {
                         // 安装成功
-                        listener.onInstallSuccess();
+                        if (listener != null) {
+                            listener.onInstallSuccess();
+                        }
                         // 反注册
                         Zeus.unregisterPluginStateListener(this);
                     }
@@ -79,23 +97,13 @@ public class Plugin {
                 // 插件已安装，未加载，触发加载。
                 boolean loadPlugin = Zeus.loadPlugin(pluginPkgName);
                 if (loadPlugin) {
-                    Toast.makeText(context, "插件1加载成功，可用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "插件加载成功，可用", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(context, "插件1加载失败，不可用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "插件加载失败，不可用", Toast.LENGTH_SHORT).show();
                 }
                 return loadPlugin;
             }
         }
-    }
-
-    /**
-     * 通过Spi的形式访问插件
-     */
-    public static IPluginApi getApi() {
-        if (api == null) {
-            return emptyImpl;
-        }
-        return api;
     }
 
     /**
@@ -120,25 +128,73 @@ public class Plugin {
         return null;
     }
 
-    private static final IPluginApi emptyImpl = new IPluginApi() {
-        @Override
-        public void startPluginActivity(Context context) {
-            Toast.makeText(context, "插件未加载", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public View getPluginView(Context context) {
-            Toast.makeText(context, "插件未加载", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
-        @Override
-        public void addPluginView(ViewGroup viewGroup) {
-            Toast.makeText(viewGroup.getContext(), "插件未加载", Toast.LENGTH_SHORT).show();
-        }
-    };
-
     public interface OnPluginInstallListener {
         void onInstallSuccess();
+    }
+
+    public static void jump2PluginActivity(Context context) {
+        try {
+            api.startActivity(context, "LivePluginDemoAppCompatActivity");
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Toast.makeText(context, "启动失败", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void startPluginServiceByHost(Context context) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(context, "com.volcengine.zeus.plugin_impl.PluginService"));
+        ZeusTransformUtils.startService(context, intent, pluginPkgName);
+    }
+
+    public static void startPluginServiceByPlugin(Context context) {
+        api.startPluginService(context);
+    }
+
+    public static void bindPluginServiceByHost(Context context) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(context, "com.volcengine.zeus.plugin_impl.PluginService"));
+        ZeusTransformUtils.bindService(context, intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                try {
+                    MethodUtils.invokeMethod(service, "play");
+                } catch (Throwable e) {
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, 0, pluginPkgName);
+    }
+
+    public static void bindPluginServiceByPlugin(Context context) {
+        api.bingPluginService(context);
+    }
+
+    public static void sendBroadcastByHost(Context context) {
+        Toast.makeText(context, "仅支持动态广播，且需要在插件中注册。宿主中注册比较麻烦，这里不提供Demo", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void sendBroadcastByPlugin(Context context) {
+        api.sendBroadcastByPlugin(context);
+    }
+
+    public static void insertProviderByHost(Context context) {
+        String AUTHORITY = pluginPkgName + ".pluginprovider";
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("from", "host");
+        ZeusProviderTransform.insert(contentResolver, Uri.parse("content://" + AUTHORITY), contentValues, pluginPkgName);
+    }
+
+    public static void insertProviderByPlugin(Context context) {
+        api.insertProviderByPlugin(context);
+    }
+
+    public static void startPluginIntentServiceByPlugin(Context context) {
+        api.startPluginIntentServiceByPlugin(context);
     }
 }

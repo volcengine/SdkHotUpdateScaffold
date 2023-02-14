@@ -4,5 +4,24 @@
     <asm skipDebug="false" skipFrames="false" skipCode="false" expandFrames="false" />
     <groovy codeStyle="LEGACY" />
   </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/select_left_item.xml" value="0.172" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2671875" />
+        <entry key="app/src/main/res/layout/recycler_view_item_empty.xml" value="0.3451086956521739" />
+        <entry key="app/src/main/res/layout/recycler_view_item_header.xml" value="0.3451086956521739" />
+        <entry key="app/src/main/res/layout/recycler_view_item_title.xml" value="0.3451086956521739" />
+        <entry key="app/src/main/res/xml/a.xml" value="0.10960144927536232" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment1.xml" value="0.1" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment2.xml" value="0.1" />
+        <entry key="plugin-api/src/main/res/layout/nav_fragment3.xml" value="0.1" />
+        <entry key="plugin-api/src/main/res/layout/recycler_view_item_button.xml" value="0.3451086956521739" />
+        <entry key="plugin-impl/src/main/res/layout/activity_plugin_main.xml" value="0.2203125" />
+        <entry key="plugin-impl/src/main/res/layout/fragment_plugin.xml" value="0.121875" />
+        <entry key="plugin-impl/src/main/res/layout/fragment_plugin1.xml" value="0.3451086956521739" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

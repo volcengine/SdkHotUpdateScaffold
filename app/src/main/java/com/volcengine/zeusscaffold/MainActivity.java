@@ -1,34 +1,40 @@
 package com.volcengine.zeusscaffold;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.apm.applog.AppLog;
 import com.volcengine.zeus.Zeus;
 import com.volcengine.zeus.ZeusPluginStateListener;
 import com.volcengine.zeus.demo.R;
 import com.volcengine.zeus.plugin.Plugin;
+import com.volcengine.zeus.plugin_api.PluginMain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupView();
+        initData();
         Zeus.registerPluginStateListener(new ZeusPluginStateListener() {
             @Override
-            public void onPluginStateChange(String pluginPkg, int event, Object... objects) {
-                updatePluginState(pluginPkg, event, objects);
+            public void onPluginStateChange(String s, int i, Object... objects) {
+                updatePluginState(s, i, objects);
             }
         });
     }
@@ -48,19 +54,43 @@ public class MainActivity extends Activity {
 
     boolean hasUpdate = false;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    private String getLifeCycle(int lifeCycle) {
+        switch (lifeCycle) {
+            case 1:
+                return "未安装";
+            case 2:
+                return "安装成功";
+            case 3:
+                return "加载成功";
+        }
+        return "异常";
+    }
+
+    private SimpleAdapter mLeftAdapter;
+    private SimpleAdapter mRightAdapter;
+    protected final List<ItemAction> data = new ArrayList<>();
+
+
+    private void setupView() {
+        RecyclerView mLeftRecyclerView = findViewById(R.id.leftRecyclerView);
+        RecyclerView mRightRecyclerView = findViewById(R.id.rightRecyclerView);
+        mLeftAdapter = new SimpleAdapter(item -> mRightAdapter.setData(item.subItem));
+        mRightAdapter = new SimpleAdapter();
+        mLeftRecyclerView.setAdapter(mLeftAdapter);
+        mRightRecyclerView.setAdapter(mRightAdapter);
+        mLeftRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRightRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 
     private void updatePluginState(String callBackPackageName, int event, Object[] objects) {
         hasUpdate = true;
-        updatePluginState(callBackPackageName, com.volcengine.zeus.plugin_api.Plugin.pluginPkgName, R.id.pluginState, event, objects);
+        final TextView globalTips = findViewById(R.id.global_tips);
+        final String s = updatePluginState(callBackPackageName, PluginMain.pluginPkgName, event, objects);
+        runOnUiThread(() -> globalTips.setText(String.format("%s", s)));
     }
 
-
-    private void updatePluginState(String callBackPackageName, String pkgName, int id, int event, Object[] objects) {
+    private String updatePluginState(String callBackPackageName, String pkgName, int event, Object[] objects) {
         Plugin plugin = Zeus.getPlugin(pkgName);
         String format = String.format(Locale.getDefault(), "%s %s  版本号：%d", pkgName, getLifeCycle(plugin.getLifeCycle()), plugin.getVersion());
         if (TextUtils.equals(callBackPackageName, pkgName)) {
@@ -100,43 +130,115 @@ public class MainActivity extends Activity {
                     break;
             }
         }
-        String finalFormat = format;
-        runOnUiThread(() -> ((TextView) findViewById(id)).setText(finalFormat));
+        return format;
     }
 
-    private String getLifeCycle(int lifeCycle) {
-        switch (lifeCycle) {
-            case 1:
-                return "未安装";
-            case 2:
-                return "安装成功";
-            case 3:
-                return "加载成功";
-        }
-        return "异常";
+
+    public void fillData() {
+        // 日常开发的case
+        List<ItemAction> devCase = getDevCase();
+        // 调整下面顺序，可以改变左侧的顺序
+        data.add(new ItemAction("日常开发case", devCase));
     }
 
-    public void pluginPlugin(View view) {
-        boolean b = com.volcengine.zeus.plugin_api.Plugin.preparePlugin(this, () -> {
-            // 安装成功的回调。可能在执行preparePlugin很久之后才安装成功（如下载插件耗时1min），所以也不建议在
-            // 这里执行逻辑，因为时机不确定。
-            // pluginPlugin(view);
-        });
-        if (b) {
-            // 插件准备好了，使用插件功能
-            com.volcengine.zeus.plugin_api.Plugin.getApi().startPluginActivity(this);
-        }
+    private List<ItemAction> getDevCase() {
+        ArrayList<ItemAction> subItems = new ArrayList<>();
+
+        subItems.add(new ItemAction("同意隐私权限，并请求插件", v -> {
+            Zeus.onPrivacyAgreed();
+            Zeus.fetchPlugin(PluginMain.pluginPkgName);
+        }));
+        subItems.add(new ItemAction("展示插件的Fragment到宿主Activity", v -> {
+            boolean result = PluginMain.preparePlugin(MainActivity.this);
+            if (result) {
+                getSupportFragmentManager().beginTransaction().add(v.getId(), PluginMain.api.getFragment()).commit();
+            }
+        }));
+        subItems.add(new ItemAction("添加插件View到宿主", v -> {
+            View pluginView = PluginMain.callPluginByReflect(MainActivity.this);
+            if (pluginView != null) {
+                ((ViewGroup) v).addView(pluginView);
+            }
+        }));
+
+        subItems.add(new ItemAction("加载插件，跳转到插件MainActivity", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.jump2PluginActivity(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("startPluginService By Host", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.startPluginServiceByHost(MainActivity.this);
+            }
+        }));
+        subItems.add(new ItemAction("startPluginService By Plugin", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.startPluginServiceByPlugin(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("startPluginIntentService By Plugin", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.startPluginIntentServiceByPlugin(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("bindPluginService By Host", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.bindPluginServiceByHost(MainActivity.this);
+            }
+        }));
+        subItems.add(new ItemAction("bindPluginService By Plugin", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.bindPluginServiceByPlugin(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("sendBroadcast By Host", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.sendBroadcastByHost(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("sendBroadcast By Plugin", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.sendBroadcastByPlugin(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("insert Provider By Host", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.insertProviderByHost(MainActivity.this);
+            }
+        }));
+
+        subItems.add(new ItemAction("insert Provider By Plugin", v -> {
+            boolean b = PluginMain.preparePlugin(MainActivity.this);
+            if (b) {
+                PluginMain.insertProviderByPlugin(MainActivity.this);
+            }
+        }));
+        return subItems;
     }
 
-    public void addPluginView(View view) {
-        View pluginView = com.volcengine.zeus.plugin_api.Plugin.callPluginByReflect(this);
-        if (pluginView != null) {
-            ((ViewGroup) findViewById(R.id.view_group)).addView(pluginView);
-        }
+    private void initData() {
+        new Thread(() -> {
+            MainActivity.this.fillData();
+            MainActivity.this.runOnUiThread(() -> {
+                mLeftAdapter.setData(data);
+                mRightAdapter.setData(data.get(0).subItem);
+            });
+        }).start();
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 }

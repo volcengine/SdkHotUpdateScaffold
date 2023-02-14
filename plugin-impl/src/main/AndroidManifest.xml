@@ -9,6 +9,23 @@
                 <action android:name="${applicationId}.warningExemptions" />
             </intent-filter>
         </activity>
+
+        <service android:name=".PluginService" />
+
+        <service android:name=".PluginIntentService" />
+
+        <receiver
+            android:name=".PluginReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="${applicationId}.PluginReceiver" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".PluginContentProvider"
+            android:authorities="${applicationId}.pluginprovider"
+            android:exported="false" />
     </application>
 
 </manifest>

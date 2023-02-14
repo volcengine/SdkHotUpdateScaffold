@@ -54,4 +54,5 @@ repositories {
 
 dependencies {
     implementation project(':plugin-api')
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
 }
